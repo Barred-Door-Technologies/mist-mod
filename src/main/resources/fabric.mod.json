@@ -11,13 +11,20 @@
 		"homepage": "https://mistsmp.org",
 		"sources": "https://github.com/Barred-Door-Technologies/mist-mod"
 	},
-	"environment": "client",
+  "license": "LicenseRef-All-Rights-Reserved",
+  "environment": "client",
 	"entrypoints": {
 		"client": [
 			"com.mistsmp.mod.client.MistModClient"
 		]
 	},
-	"depends": {
+  "mixins": [
+    {
+      "config": "mistsmp.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
 		"fabricloader": ">=0.19.5",
 		"minecraft": "~26.3",
 		"java": ">=25",

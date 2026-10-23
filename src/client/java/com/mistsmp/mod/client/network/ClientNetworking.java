@@ -1,7 +1,6 @@
 package com.mistsmp.mod.client.network;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import com.mistsmp.mod.client.cosmetic.LoadoutCache;
 import com.mistsmp.mod.network.HelloPayload;
@@ -23,9 +22,8 @@ import net.fabricmc.loader.api.FabricLoader;
  *  3. The plugin replies with WelcomePayload, or disconnects outdated clients.
  *  4. The plugin then sends a full LoadoutsPayload snapshot, followed by deltas.
  */
+@Slf4j(topic = "mistsmp")
 public final class ClientNetworking {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger("mistsmp");
 
 	private ClientNetworking() {
 	}
@@ -44,7 +42,7 @@ public final class ClientNetworking {
 
 		ClientPlayNetworking.registerGlobalReceiver(WelcomePayload.TYPE, (payload, context) -> {
 			ClientSession.markWelcomed();
-			LOGGER.info("Mist SMP server accepted client (server protocol {})", payload.serverProtocolVersion());
+			log.info("Mist SMP server accepted client (server protocol {})", payload.serverProtocolVersion());
 		});
 
 		ClientPlayNetworking.registerGlobalReceiver(LoadoutsPayload.TYPE, (payload, context) -> {
@@ -52,7 +50,7 @@ public final class ClientNetworking {
 				return;
 			}
 			LoadoutCache.apply(payload);
-			LOGGER.debug("Applied loadouts: replaceAll={}, entries={}", payload.replaceAll(), payload.entries().size());
+            log.info("Applied loadouts: replaceAll={}, entries={}", payload.replaceAll(), payload.entries().size());
 		});
 
 		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
