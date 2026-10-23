@@ -1,0 +1,26 @@
+{
+	"schemaVersion": 1,
+	"id": "mistsmp",
+	"version": "${version}",
+	"name": "Mist SMP",
+	"description": "Client companion for the Mist SMP server. Renders cosmetics. Does nothing on other servers.",
+	"authors": [
+		"Barred Door Technologies"
+	],
+	"contact": {
+		"homepage": "https://mistsmp.org",
+		"sources": "https://github.com/Barred-Door-Technologies/mist-mod"
+	},
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.mistsmp.mod.client.MistModClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
