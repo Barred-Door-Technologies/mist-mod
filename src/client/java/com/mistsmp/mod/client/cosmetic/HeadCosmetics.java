@@ -43,6 +43,11 @@ public final class HeadCosmetics {
             return;
         }
 
+        // No model in the loaded pack: leave the real helmet alone rather than draw the missing-model cube.
+        if (!CosmeticModels.exists(cosmetic)) {
+            return;
+        }
+
         // Hide whatever is actually worn: armor helmets, skulls, and other head items.
         state.headEquipment = ItemStack.EMPTY;
         state.wornHeadType = null;
