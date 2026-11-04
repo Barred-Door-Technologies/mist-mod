@@ -50,10 +50,10 @@ All multi-byte integers are big-endian (Netty default).
 
 ### `mistsmp:hello` (client to server)
 
-| Field | Type | Notes |
-|---|---|---|
-| protocolVersion | VarInt | `1` |
-| modVersion | String | e.g. `0.1.0`, for logging and support only |
+| Field | Type | Notes                                      |
+|---|---|--------------------------------------------|
+| protocolVersion | VarInt | `2`                                        |
+| modVersion | String | e.g. `0.2.0`, for logging and support only |
 
 ### `mistsmp:welcome` (server to client)
 
@@ -82,8 +82,9 @@ Cosmetic:
 | Field | Type | Notes |
 |---|---|---|
 | slot | VarInt | Slot wire id, see below |
-| cosmeticId | String | Namespaced id, e.g. `mistsmp:cosmetic/head/top_hat`. Max 256 chars. Matches the `CosmeticSkin` key in the database and the model path in the server resource pack. |
-
+| cosmeticId | String | Namespaced id, e.g. `mistsmp:cosmetic/head/top_hat`. Max 256 chars. Matches the cosmetic key in the database and the model path in the server resource pack. |
+| paramCount | VarInt | Max 16. Usually `0`. |
+| params | paramCount x (String key, String value) | Optional settings for this cosmetic. Key max 64 chars, value max 256. Clients ignore keys they don't know. Known: `tint` (hex color, e.g. `#FFAA00`). |
 In a delta, each listed player's entry fully replaces that player's previous loadout.
 
 Clients skip unknown slot ids and unparseable cosmetic ids instead of failing, so the server can add slots without breaking older clients in the same protocol version.
@@ -92,10 +93,17 @@ Clients skip unknown slot ids and unparseable cosmetic ids instead of failing, s
 
 | Wire id | Slot | Renders when |
 |---|---|---|
-| 0 | HEAD | The player is wearing something in the head slot. The worn item is hidden and the cosmetic is drawn instead. Nothing on the head means no cosmetic. |
-| 1 | WINGS | The player is wearing an elytra. The elytra is drawn with the cosmetic instead. |
+| 0 | HEAD | Something is worn on the head. The worn item is hidden and the cosmetic is drawn instead. |
+| 1 | CHEST | A chestplate is worn. It is hidden and the cosmetic is drawn instead. |
+| 2 | LEGS | Leggings are worn. Same rule. |
+| 3 | FEET | Boots are worn. Same rule. |
+| 4 | BACK | An elytra is worn. Same rule. Wings, capes and backpacks. |
+| 5 | HELD | An item the cosmetic applies to is held. Its model is replaced. |
+| 6 | FACE | Always while equipped (no vanilla item). |
+| 7 | FOLLOWER | Always while equipped (no vanilla item). One per player. |
+| 8 | AURA | Always while equipped (no vanilla item). Particles only. |
 
-Wire ids are permanent. Never reuse a retired id.
+Wire ids are permanent once a release ships. Never reuse a retired id. Protocol 2 replaced the unreleased draft ids from protocol 1.
 
 ## Assets
 

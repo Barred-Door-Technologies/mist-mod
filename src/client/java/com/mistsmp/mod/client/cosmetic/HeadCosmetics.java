@@ -3,6 +3,8 @@ package com.mistsmp.mod.client.cosmetic;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mistsmp.mod.client.cosmetic.def.CosmeticAnimator;
+import com.mistsmp.mod.client.cosmetic.def.CosmeticDefinitions;
 import com.mistsmp.mod.client.network.ClientSession;
 import com.mistsmp.mod.cosmetic.CosmeticSlot;
 
@@ -54,7 +56,13 @@ public final class HeadCosmetics {
         state.wornHeadProfile = null;
 
         // Draw the cosmetic through the head item path instead.
-        itemModelResolver.updateForLiving(state.headItem, stackFor(cosmetic), ItemDisplayContext.HEAD, entity);
+        itemModelResolver.updateForLiving(state.headItem, stackFor(frameFor(entity, cosmetic)), ItemDisplayContext.HEAD, entity);
+    }
+
+    /** The flipbook frame to show now. A frame missing from the pack falls back to the base model. */
+    private static Identifier frameFor(LivingEntity entity, Identifier cosmetic) {
+        Identifier frame = CosmeticAnimator.currentFrame(entity, CosmeticDefinitions.get(cosmetic));
+        return frame.equals(cosmetic) || CosmeticModels.exists(frame) ? frame : cosmetic;
     }
 
     private static ItemStack stackFor(Identifier cosmetic) {

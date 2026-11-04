@@ -15,7 +15,7 @@ public final class MistProtocol {
 	 * Bump only when the wire format changes in a way old clients cannot read.
 	 * Mod releases that change rendering or assets keep the same protocol version.
 	 */
-	public static final int PROTOCOL_VERSION = 1;
+	public static final int PROTOCOL_VERSION = 2;
 
 	private MistProtocol() {
 	}
