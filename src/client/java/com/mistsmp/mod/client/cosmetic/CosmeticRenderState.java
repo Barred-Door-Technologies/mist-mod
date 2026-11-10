@@ -31,6 +31,22 @@ public interface CosmeticRenderState {
 
     void mistsmp$setWingTransform(CosmeticTransform transform);
 
+    /** FEET boots, drawn on the leg bones by BodyCosmeticLayer. Empty when there are none. */
+    ItemStackRenderState mistsmp$getRightBoot();
+
+    ItemStackRenderState mistsmp$getLeftBoot();
+
+    CosmeticTransform mistsmp$getBootTransform();
+
+    void mistsmp$setBootTransform(CosmeticTransform transform);
+
+    /** FACE model, drawn on the head bone by BodyCosmeticLayer. Empty when there is none. */
+    ItemStackRenderState mistsmp$getFaceItem();
+
+    CosmeticTransform mistsmp$getFaceTransform();
+
+    void mistsmp$setFaceTransform(CosmeticTransform transform);
+
     /** BACK cape texture path, or null. Applied to the player's skin in AvatarRendererMixin. */
     Identifier mistsmp$getCapeTexture();
 

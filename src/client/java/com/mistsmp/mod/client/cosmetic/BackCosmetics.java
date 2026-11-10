@@ -98,10 +98,10 @@ public final class BackCosmetics {
         itemModelResolver.updateForLiving(cosmeticState.mistsmp$getLeftWing(), HeadCosmetics.stackFor(left), ItemDisplayContext.NONE, entity);
 
         Identifier right = left.withSuffix("_right");
-        if (!CosmeticModels.exists(right)) {
+        if (!CosmeticModels.has(right)) {
             right = cosmetic.withSuffix("_right");
         }
-        if (CosmeticModels.exists(right)) {
+        if (CosmeticModels.has(right)) {
             itemModelResolver.updateForLiving(cosmeticState.mistsmp$getRightWing(), HeadCosmetics.stackFor(right), ItemDisplayContext.NONE, entity);
         } else {
             warnOnce(cosmetic, "No right wing model " + right + "; only the left wing will show");

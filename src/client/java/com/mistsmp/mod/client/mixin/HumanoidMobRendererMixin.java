@@ -5,7 +5,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.mistsmp.mod.client.cosmetic.ArmorCosmetics;
 import com.mistsmp.mod.client.cosmetic.BackCosmetics;
+import com.mistsmp.mod.client.cosmetic.FaceCosmetics;
+import com.mistsmp.mod.client.cosmetic.FeetCosmetics;
 import com.mistsmp.mod.client.cosmetic.BodyCosmetics;
 import com.mistsmp.mod.client.cosmetic.HeadCosmetics;
 
@@ -28,5 +31,8 @@ abstract class HumanoidMobRendererMixin {
         HeadCosmetics.apply(entity, state, partialTicks, itemModelResolver);
         BodyCosmetics.apply(entity, state, partialTicks, itemModelResolver);
         BackCosmetics.apply(entity, state, partialTicks, itemModelResolver);
+        FeetCosmetics.apply(entity, state, partialTicks, itemModelResolver);
+        FaceCosmetics.apply(entity, state, partialTicks, itemModelResolver);
+        ArmorCosmetics.apply(entity, state);
     }
 }

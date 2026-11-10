@@ -50,7 +50,7 @@ public final class BodyCosmetics {
         }
 
         Identifier cosmetic = LoadoutCache.get(entity.getUUID(), CosmeticSlot.CHEST);
-        if (cosmetic == null || !CosmeticModels.exists(cosmetic)) {
+        if (cosmetic == null || !CosmeticModels.has(cosmetic)) {
             return;
         }
 

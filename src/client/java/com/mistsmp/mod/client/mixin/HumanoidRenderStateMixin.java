@@ -35,6 +35,56 @@ abstract class HumanoidRenderStateMixin implements CosmeticRenderState {
     @Unique
     private Identifier mistsmp$capeTexture;
 
+    @Unique
+    private final ItemStackRenderState mistsmp$rightBoot = new ItemStackRenderState();
+
+    @Unique
+    private final ItemStackRenderState mistsmp$leftBoot = new ItemStackRenderState();
+
+    @Unique
+    private CosmeticTransform mistsmp$bootTransform;
+
+    @Unique
+    private final ItemStackRenderState mistsmp$faceItem = new ItemStackRenderState();
+
+    @Unique
+    private CosmeticTransform mistsmp$faceTransform;
+
+    @Override
+    public ItemStackRenderState mistsmp$getFaceItem() {
+        return mistsmp$faceItem;
+    }
+
+    @Override
+    public CosmeticTransform mistsmp$getFaceTransform() {
+        return mistsmp$faceTransform;
+    }
+
+    @Override
+    public void mistsmp$setFaceTransform(CosmeticTransform transform) {
+        this.mistsmp$faceTransform = transform;
+    }
+
+    @Override
+    public ItemStackRenderState mistsmp$getRightBoot() {
+        return mistsmp$rightBoot;
+    }
+
+    @Override
+    public ItemStackRenderState mistsmp$getLeftBoot() {
+        return mistsmp$leftBoot;
+    }
+
+    @Override
+    public CosmeticTransform mistsmp$getBootTransform() {
+        return mistsmp$bootTransform;
+    }
+
+    @Override
+    public void mistsmp$setBootTransform(CosmeticTransform transform) {
+        this.mistsmp$bootTransform = transform;
+    }
+
     @Override
     public CosmeticTransform mistsmp$getHeadTransform() {
         return mistsmp$headTransform;
