@@ -29,7 +29,7 @@ public record CosmeticDefinition(
     public enum AnimateWhen {
         ALWAYS, MOVING, SPRINTING, FLYING, IDLE;
 
-        static AnimateWhen parse(String value) {
+        public static AnimateWhen parse(String value) {
             if (value == null) return ALWAYS;
             try {
                 return valueOf(value.trim().toUpperCase(java.util.Locale.ROOT));

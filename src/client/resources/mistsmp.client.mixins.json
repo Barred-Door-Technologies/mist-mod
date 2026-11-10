@@ -3,7 +3,11 @@
   "package": "com.mistsmp.mod.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "HumanoidMobRendererMixin"
+    "AvatarRendererMixin",
+    "CustomHeadLayerMixin",
+    "HumanoidMobRendererMixin",
+    "HumanoidRenderStateMixin",
+    "WingsLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

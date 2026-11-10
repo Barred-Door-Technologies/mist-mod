@@ -5,6 +5,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.mistsmp.mod.client.cosmetic.BackCosmetics;
+import com.mistsmp.mod.client.cosmetic.BodyCosmetics;
 import com.mistsmp.mod.client.cosmetic.HeadCosmetics;
 
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -23,6 +25,8 @@ abstract class HumanoidMobRendererMixin {
     @Inject(method = "extractHumanoidRenderState", at = @At("TAIL"))
     private static void mistsmp$applyHeadCosmetic(LivingEntity entity, HumanoidRenderState state, float partialTicks,
                                                   ItemModelResolver itemModelResolver, CallbackInfo ci) {
-        HeadCosmetics.apply(entity, state, itemModelResolver);
+        HeadCosmetics.apply(entity, state, partialTicks, itemModelResolver);
+        BodyCosmetics.apply(entity, state, partialTicks, itemModelResolver);
+        BackCosmetics.apply(entity, state, partialTicks, itemModelResolver);
     }
 }

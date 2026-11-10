@@ -68,7 +68,8 @@ public final class CosmeticDefinitions {
         }
 
         definitions = Map.copyOf(loaded);
-        LOGGER.info("Loaded {} cosmetic definitions", loaded.size());
+        com.mistsmp.mod.client.cosmetic.CosmeticTextures.clear();
+        LOGGER.info("Loaded {} cosmetic definitions: {}", loaded.size(), loaded.keySet());
     }
 
     /** mistsmp:cosmetics/head/top_hat.json -> mistsmp:cosmetic/head/top_hat */

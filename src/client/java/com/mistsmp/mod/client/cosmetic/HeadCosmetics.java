@@ -4,7 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mistsmp.mod.client.cosmetic.def.CosmeticAnimator;
+import com.mistsmp.mod.client.cosmetic.def.CosmeticDefinition;
 import com.mistsmp.mod.client.cosmetic.def.CosmeticDefinitions;
+import com.mistsmp.mod.client.cosmetic.def.CosmeticTransform;
 import com.mistsmp.mod.client.network.ClientSession;
 import com.mistsmp.mod.cosmetic.CosmeticSlot;
 
@@ -26,6 +28,8 @@ import net.minecraft.world.item.Items;
  *
  * Works by editing the render state after vanilla extracts it. Vanilla's CustomHeadLayer then
  * draws the cosmetic exactly like a carved pumpkin, using the model's "head" display transform.
+ * The definition's placement, spin and bob ride along on the render state and are applied by
+ * CustomHeadLayerMixin just before the model is drawn.
  */
 public final class HeadCosmetics {
 
@@ -35,7 +39,11 @@ public final class HeadCosmetics {
     private HeadCosmetics() {
     }
 
-    public static void apply(LivingEntity entity, HumanoidRenderState state, ItemModelResolver itemModelResolver) {
+    public static void apply(LivingEntity entity, HumanoidRenderState state, float partialTick, ItemModelResolver itemModelResolver) {
+        // Render states are reused between frames, so clear last frame's transform before anything else.
+        CosmeticRenderState cosmeticState = (CosmeticRenderState) state;
+        cosmeticState.mistsmp$setHeadTransform(null);
+
         if (!(entity instanceof Player) || !ClientSession.isWelcomed()) {
             return;
         }
@@ -55,17 +63,19 @@ public final class HeadCosmetics {
         state.wornHeadType = null;
         state.wornHeadProfile = null;
 
-        // Draw the cosmetic through the head item path instead.
-        itemModelResolver.updateForLiving(state.headItem, stackFor(frameFor(entity, cosmetic)), ItemDisplayContext.HEAD, entity);
+        // Draw the cosmetic through the head item path instead, on the current flipbook frame.
+        CosmeticDefinition definition = CosmeticDefinitions.get(cosmetic);
+        itemModelResolver.updateForLiving(state.headItem, stackFor(frameFor(entity, cosmetic, definition)), ItemDisplayContext.HEAD, entity);
+        cosmeticState.mistsmp$setHeadTransform(CosmeticTransform.compute(definition, entity, partialTick));
     }
 
     /** The flipbook frame to show now. A frame missing from the pack falls back to the base model. */
-    private static Identifier frameFor(LivingEntity entity, Identifier cosmetic) {
-        Identifier frame = CosmeticAnimator.currentFrame(entity, CosmeticDefinitions.get(cosmetic));
+    static Identifier frameFor(LivingEntity entity, Identifier cosmetic, CosmeticDefinition definition) {
+        Identifier frame = CosmeticAnimator.currentFrame(entity, definition);
         return frame.equals(cosmetic) || CosmeticModels.exists(frame) ? frame : cosmetic;
     }
 
-    private static ItemStack stackFor(Identifier cosmetic) {
+    static ItemStack stackFor(Identifier cosmetic) {
         return STACKS.computeIfAbsent(cosmetic, id -> {
             ItemStack stack = new ItemStack(Items.PAPER);
             stack.set(DataComponents.ITEM_MODEL, id);
