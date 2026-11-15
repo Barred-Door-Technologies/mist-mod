@@ -8,6 +8,7 @@ import com.mistsmp.mod.client.cosmetic.follower.FollowerRenderer;
 import com.mistsmp.mod.client.cosmetic.follower.FollowerTracker;
 import com.mistsmp.mod.client.cosmetic.particle.CosmeticParticles;
 import com.mistsmp.mod.client.network.ClientNetworking;
+import com.mistsmp.mod.client.relic.RelicParticles;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -24,6 +25,7 @@ public class MistModClient implements ClientModInitializer {
         CosmeticDefinitions.init();
         MistKeys.init();
         FollowerRenderer.init();
+        RelicParticles.init();
 
         LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, renderer, helper, context) -> {
             if (renderer instanceof AvatarRenderer<?> avatar) {
@@ -35,6 +37,7 @@ public class MistModClient implements ClientModInitializer {
             MistKeys.tick(client);
             FollowerTracker.tick(client.level);
             CosmeticParticles.tick(client);
+            RelicParticles.tick(client);
         });
     }
 }

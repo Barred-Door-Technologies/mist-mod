@@ -4,7 +4,7 @@ This is the contract between `mist-plugin` (Paper, server) and `mist-mod` (Fabri
 Both sides implement it by hand: Paper hands plugins raw `byte[]`, Fabric uses typed codecs.
 Change this file and both implementations together.
 
-Current protocol version: **1**
+Current protocol version: **2**
 
 ## Principles
 
@@ -52,8 +52,8 @@ All multi-byte integers are big-endian (Netty default).
 
 | Field | Type | Notes                                      |
 |---|---|--------------------------------------------|
-| protocolVersion | VarInt | `2`                                        |
-| modVersion | String | e.g. `0.2.0`, for logging and support only |
+| protocolVersion | VarInt | The mod's protocol version, currently `2` |
+| modVersion | String | e.g. `0.9.0`, for logging and support only |
 
 ### `mistsmp:welcome` (server to client)
 
@@ -97,8 +97,8 @@ Clients skip unknown slot ids and unparseable cosmetic ids instead of failing, s
 | 1 | CHEST | A chestplate is worn. It is hidden and the cosmetic is drawn instead. |
 | 2 | LEGS | Leggings are worn. Same rule. |
 | 3 | FEET | Boots are worn. Same rule. |
-| 4 | BACK | An elytra is worn. Same rule. Wings, capes and backpacks. |
-| 5 | HELD | An item the cosmetic applies to is held. Its model is replaced. |
+| 4 | BACK | Wings: an elytra is worn, same rule. Capes: always, like a vanilla cape. |
+| 5 | HELD | An item the cosmetic applies to is in hand. Its model is replaced in hand only; inventories show the real item. |
 | 6 | FACE | Always while equipped (no vanilla item). |
 | 7 | FOLLOWER | Always while equipped (no vanilla item). One per player. |
 | 8 | AURA | Always while equipped (no vanilla item). Particles only. |
@@ -107,4 +107,4 @@ Wire ids are permanent once a release ships. Never reuse a retired id. Protocol 
 
 ## Assets
 
-Cosmetic models and textures ship in the server resource pack, not in the mod. The mod looks models up by `cosmeticId`. If the pack has no model for an id, the client renders vanilla for that slot.
+Cosmetic models, textures, and definition files ship in the server resource pack, not in the mod. The mod looks them up by `cosmeticId`. If the pack has nothing for an id, the client renders vanilla for that slot. File layout and the definition format are in ASSETS.md.

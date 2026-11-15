@@ -1,0 +1,216 @@
+{
+  "credit": "Mist SMP boot reference. Build the boot for the RIGHT leg only; the sole sits at the bottom of the leg, toe toward FRONT, outside of the foot toward OUTSIDE. Then save a copy mirrored on X as <key>_left for the left leg. Delete every REFERENCE cube before exporting.",
+  "textures": {
+    "ref": "block/gray_concrete",
+    "particle": "block/gray_concrete"
+  },
+  "elements": [
+    {
+      "name": "REFERENCE right leg (delete before export)",
+      "from": [
+        6,
+        0,
+        6
+      ],
+      "to": [
+        10,
+        12,
+        10
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        }
+      }
+    },
+    {
+      "name": "REFERENCE FRONT (toe) marker (delete before export)",
+      "from": [
+        7,
+        0,
+        10
+      ],
+      "to": [
+        9,
+        1,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        }
+      }
+    },
+    {
+      "name": "REFERENCE OUTSIDE marker (delete before export)",
+      "from": [
+        5,
+        5,
+        7
+      ],
+      "to": [
+        6,
+        7,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ref"
+        }
+      }
+    }
+  ]
+}

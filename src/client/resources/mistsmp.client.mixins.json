@@ -8,6 +8,12 @@
     "HumanoidMobRendererMixin",
     "HumanoidRenderStateMixin",
     "ItemModelResolverMixin",
+    "RelicEquipmentLayerMixin",
+    "RelicItemFeatureRendererMixin",
+    "RelicItemModelResolverMixin",
+    "RelicLayerRenderStateMixin",
+    "RelicRenderStateMixin",
+    "RelicRenderTypesMixin",
     "WingsLayerMixin"
   ],
   "injectors": {
