@@ -19,12 +19,15 @@ import net.fabricmc.loader.api.FabricLoader;
 /**
  * Client settings saved in config/mistsmp.json. Unknown keys are kept out; missing keys use defaults,
  * so a newer mod can add settings without breaking an older file.
+ *
+ * showOtherPlayersParticles: other players' cosmetic particles (K).
+ * reduceTitleMotion: animated titles show as a still gradient (key unbound by default).
  */
-public record MistSettings(boolean showOtherPlayersParticles) {
+public record MistSettings(boolean showOtherPlayersParticles, boolean reduceTitleMotion) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("mistsmp");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final MistSettings DEFAULTS = new MistSettings(true);
+    private static final MistSettings DEFAULTS = new MistSettings(true, false);
 
     private static volatile MistSettings current = DEFAULTS;
 
@@ -41,7 +44,8 @@ public record MistSettings(boolean showOtherPlayersParticles) {
         try (Reader reader = Files.newBufferedReader(file)) {
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             boolean show = !json.has("showOtherPlayersParticles") || json.get("showOtherPlayersParticles").getAsBoolean();
-            current = new MistSettings(show);
+            boolean reduceMotion = json.has("reduceTitleMotion") && json.get("reduceTitleMotion").getAsBoolean();
+            current = new MistSettings(show, reduceMotion);
         } catch (Exception e) {
             LOGGER.warn("Could not read {}: {}. Using defaults.", file, e.getMessage());
             current = DEFAULTS;
@@ -53,6 +57,7 @@ public record MistSettings(boolean showOtherPlayersParticles) {
         Path file = file();
         JsonObject json = new JsonObject();
         json.addProperty("showOtherPlayersParticles", settings.showOtherPlayersParticles());
+        json.addProperty("reduceTitleMotion", settings.reduceTitleMotion());
         try {
             Files.createDirectories(file.getParent());
             try (Writer writer = Files.newBufferedWriter(file)) {

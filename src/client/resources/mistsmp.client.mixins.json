@@ -4,7 +4,10 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "AvatarRendererMixin",
+    "ChatScreenInsertionMixin",
     "CustomHeadLayerMixin",
+    "FontAccessor",
+    "FontGlyphMixin",
     "HumanoidMobRendererMixin",
     "HumanoidRenderStateMixin",
     "ItemModelResolverMixin",

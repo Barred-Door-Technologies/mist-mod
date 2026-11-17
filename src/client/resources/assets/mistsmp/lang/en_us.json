@@ -2,5 +2,8 @@
   "key.category.mistsmp.main": "Mist SMP",
   "key.mistsmp.toggle_particles": "Toggle Other Players' Cosmetic Particles",
   "message.mistsmp.particles_shown": "Other players' cosmetic particles: shown",
-  "message.mistsmp.particles_hidden": "Other players' cosmetic particles: hidden"
+  "message.mistsmp.particles_hidden": "Other players' cosmetic particles: hidden",
+  "key.mistsmp.toggle_title_motion": "Reduce Motion on Animated Titles",
+  "message.mistsmp.title_motion_reduced": "Animated titles: reduced motion",
+  "message.mistsmp.title_motion_on": "Animated titles: animated"
 }

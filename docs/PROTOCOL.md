@@ -108,3 +108,24 @@ Wire ids are permanent once a release ships. Never reuse a retired id. Protocol 
 ## Assets
 
 Cosmetic models, textures, and definition files ship in the server resource pack, not in the mod. The mod looks them up by `cosmeticId`. If the pack has nothing for an id, the client renders vanilla for that slot. File layout and the definition format are in ASSETS.md.
+
+## Animated titles
+
+Titles do not use a plugin channel. They ride inside normal chat and tab list text, so they need no handshake and older clients simply see a still gradient.
+
+The plugin sends an animated title (brackets included) as one text component per letter, each already colored as a gradient from the first to the second color. Each letter's `insertion` field holds a marker:
+
+```
+mistfx:1;fx=shimmer;mo=none;gl=1;sp=4.0;a=4BECD7;b=FFFFFF;i=3;n=10
+```
+
+| Key | Meaning |
+|---|---|
+| `fx` | Color effect: `static`, `flow`, `shimmer`, `pulse`, `rainbow`, `sparkle`, `ember` |
+| `mo` | Motion: `none`, `wave`, `float`, `shake`, `glitch` |
+| `gl` | `1` for a soft breathing glow (colored text shadow) |
+| `sp` | Seconds per cycle |
+| `a`, `b` | First and second color, `RRGGBB` |
+| `i`, `n` | This letter's position and the title's length |
+
+The mod recolors and moves marked letters every frame (`client/title/TitleEffects`, hooked in `FontGlyphMixin`) and ignores the marker on shift-click. Unknown keys or values fall back to the still gradient, so the server can add looks without a mod release. The Reduce Motion key bind shows every animated title as its still gradient.
