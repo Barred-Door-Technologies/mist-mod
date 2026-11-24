@@ -32,8 +32,14 @@ import net.minecraft.resources.Identifier;
  *   "spread": 0.18,             blocks; how far from the anchor a particle can appear
  *   "area": "body",             AURA only: body (around the whole player), feet (ring at the feet), head (halo above)
  *   "velocity": [0, 0.02, 0],   blocks per tick; vanilla adds its own drift to some particles
- *   "when": "always"            always, moving, sprinting, flying, idle
+ *   "when": "always",           always, moving, sprinting, flying, idle
+ *   "burst": 1,                 how many spawn together each time one is due (1 to 8)
+ *   "offset": [0, 0, 0],        blocks; shifts the spawn point
+ *   "shape": "random"           random, ring, sphere, column (see CosmeticParticles)
  * }
+ *
+ * An entry with "texture" or "textures" instead of "type" is a custom particle drawn from the resource
+ * pack; its extra fields are in {@link CustomParticleSpec}.
  *
  * Followers spawn particles around the follower; auras around the player.
  */
@@ -48,7 +54,13 @@ public record ParticleSpec(
         double velocityX,
         double velocityY,
         double velocityZ,
-        CosmeticDefinition.AnimateWhen when
+        CosmeticDefinition.AnimateWhen when,
+        int burst,
+        double offsetX,
+        double offsetY,
+        double offsetZ,
+        Shape shape,
+        CustomParticleSpec custom
 ) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("mistsmp");
@@ -63,6 +75,19 @@ public record ParticleSpec(
                 return valueOf(value.trim().toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException e) {
                 return BODY;
+            }
+        }
+    }
+
+    public enum Shape {
+        RANDOM, RING, SPHERE, COLUMN;
+
+        static Shape parse(String value) {
+            if (value == null) return RANDOM;
+            try {
+                return valueOf(value.trim().toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                return RANDOM;
             }
         }
     }
@@ -103,13 +128,23 @@ public record ParticleSpec(
     }
 
     private static ParticleSpec parse(JsonObject p) {
-        String typeName = stringOr(p, "type", "minecraft:dust");
-        Identifier typeId = Identifier.tryParse(typeName);
-        ParticleType<?> type = typeId == null ? null : BuiltInRegistries.PARTICLE_TYPE.getValue(typeId);
-        boolean supported = type == ParticleTypes.DUST || type == ParticleTypes.ENTITY_EFFECT || type instanceof SimpleParticleType;
-        if (type == null || !supported) {
-            LOGGER.warn("Particle type {} is not supported by this mod version; skipping it", typeName);
-            return null;
+        ParticleType<?> type = null;
+        CustomParticleSpec custom = null;
+        if (p.has("texture") || p.has("textures")) {
+            custom = CustomParticleSpec.parse(p);
+            if (custom == null) {
+                LOGGER.warn("Custom particle entry names no usable texture; skipping it");
+                return null;
+            }
+        } else {
+            String typeName = stringOr(p, "type", "minecraft:dust");
+            Identifier typeId = Identifier.tryParse(typeName);
+            type = typeId == null ? null : BuiltInRegistries.PARTICLE_TYPE.getValue(typeId);
+            boolean supported = type == ParticleTypes.DUST || type == ParticleTypes.ENTITY_EFFECT || type instanceof SimpleParticleType;
+            if (type == null || !supported) {
+                LOGGER.warn("Particle type {} is not supported by this mod version; skipping it", typeName);
+                return null;
+            }
         }
 
         String colorText = stringOr(p, "color", null);
@@ -124,6 +159,14 @@ public record ParticleSpec(
             }
         }
 
+        double[] offset = {0, 0, 0};
+        if (p.has("offset") && p.get("offset").isJsonArray()) {
+            JsonArray o = p.getAsJsonArray("offset");
+            for (int i = 0; i < Math.min(3, o.size()); i++) {
+                offset[i] = clamp(o.get(i).getAsFloat(), -3f, 3f);
+            }
+        }
+
         return new ParticleSpec(
                 type,
                 color,
@@ -133,7 +176,11 @@ public record ParticleSpec(
                 clamp(floatOr(p, "spread", 0.3f), 0f, 3f),
                 Area.parse(stringOr(p, "area", null)),
                 velocity[0], velocity[1], velocity[2],
-                CosmeticDefinition.AnimateWhen.parse(stringOr(p, "when", null)));
+                CosmeticDefinition.AnimateWhen.parse(stringOr(p, "when", null)),
+                (int) clamp(floatOr(p, "burst", 1f), 1f, 8f),
+                offset[0], offset[1], offset[2],
+                Shape.parse(stringOr(p, "shape", null)),
+                custom);
     }
 
     static Integer parseColor(String text) {

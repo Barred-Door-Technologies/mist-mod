@@ -34,7 +34,8 @@ In the paths below, `<key>` means your cosmetic key and `<slot>` means the slot'
 
 - Everything goes under `assets/mistsmp/`. The paths in this guide start there.
 - Textures are PNG, with width and height each a power of two (16, 32, 64, 128). Transparent pixels are fine.
-- Model textures **must** be under `textures/item/`. Textures in other folders show up as pink and black.
+- Model textures **must** be under `textures/item/`. Textures in other folders show up as pink and black in game.
+- Within that, keep them in `textures/item/cosmetic/<slot>/`. The website preview only reads the cosmetic folders, so a texture anywhere else won't show there.
 - Don't use textures from another resource pack or artist that you don't own.
     - Violation of this may result in legal action against you.
 
@@ -114,6 +115,15 @@ Without it, the cosmetic is a single still model. Every field is optional. These
 
 The sections below list each slot's extra fields. Unknown fields are ignored, and a file with a mistake is skipped (the cosmetic shows as a still model) instead of breaking anything.
 
+### The website preview
+
+The dashboard and the store show cosmetics on a 3D player, read straight from these same files. If a cosmetic looks right in Blockbench's preview and in game, it looks right on the website too, with nothing extra to make. A few things to know:
+
+- Followers and auras aren't shown in the website preview yet.
+- Flat items (models with the `minecraft:item/generated` or `minecraft:item/handheld` parent) show as a flat sprite on the website, without the game's thin 3D edge.
+- The only vanilla parents the website understands are `minecraft:item/generated`, `minecraft:item/handheld`, and `minecraft:block/block`. A model built in Blockbench as Java Block/Item doesn't need a parent at all.
+- The `items` file must be the simple form shown above. Other item model types (select, condition, and so on) won't show on the website.
+
 ### What to hand in
 
 1. The files for your slot, in the folder layout shown (a zip of the `assets` folder is easiest).
@@ -124,6 +134,7 @@ The sections below list each slot's extra fields. Unknown fields are ignored, an
     - See the cosmetic page on the website or ask staff for details on the tier system.
 6. For held items, which items it should apply to.
 7. For auras, a description of the effect if you aren't writing the definition file yourself.
+8. Optional: a picture for the store card and the dashboard. Followers and auras need one most, since the website's 3D preview doesn't show them.
 
 ---
 
@@ -360,7 +371,7 @@ The general `motion` field (spin and bob) works here too, and suits floating fol
 
 ## Aura
 
-Particles around the player. No model and no texture: the whole cosmetic is its definition file.
+Particles around the player. No model: the whole cosmetic is its definition file, plus any [custom particle](#custom-particles) textures it uses.
 
 **Files:**
 ```
@@ -398,7 +409,89 @@ Each entry in `particles` is one effect. An aura can have several.
 | `area` | Auras only: `body` (around the whole player), `feet` (a ring at the feet), or `head` (a halo above). |
 | `velocity` | Drift in blocks per tick, `[x, y, z]`. Some particles add their own drift on top. |
 | `when` | `always`, `moving`, `sprinting`, `flying`, or `idle`. |
+| `burst` | How many appear together each time one is due, 1 to 8. |
+| `offset` | Moves the spawn point, in blocks, `[x, y, z]`. |
+| `shape` | Where in the area they appear: `random` (the default for each area), `ring` (evenly around a flat circle), `sphere` (on the surface of a ball), or `column` (around the player at any height from feet to head). |
 
 Particles are drawn by each player's own game, so they cost the server nothing. Players' particle settings still apply, and anyone can hide other players' particles with a key (K by default). Keep `perSecond` modest; an aura is on screen for everyone nearby.
 
 If you aren't comfortable writing this file, describe the effect (particle, color, how dense, and when) and staff will write it.
+
+### Custom particles
+
+You can draw your own particles. They ship in the resource pack, so new ones never need a mod update.
+
+**Files:**
+```
+textures/particle/cosmetic/<name>.png
+textures/particle/cosmetic/<name>_0.png, <name>_1.png, ...   (animation frames)
+```
+
+- PNG, square, with transparency. 8x8 or 16x16 is the usual size; 32x32 at most.
+- Draw it in white or light gray if you want to color it with `color` (the color multiplies the texture). Draw it in its real colors and leave `color` out otherwise.
+- Use a name that says what it is: `heart`, `flame`, `sparkle_gold`.
+
+In the aura file, use `texture` (or `textures` for frames) instead of `type`:
+
+```json
+{
+  "particles": [
+    {
+      "texture": "mistsmp:cosmetic/heart",
+      "perSecond": 2,
+      "spread": 0.5,
+      "size": [0.12, 0.18],
+      "lifetime": [30, 40],
+      "gravity": -0.002,
+      "sway": { "amount": 0.08, "speed": 0.6 },
+      "pulse": { "amount": 0.15, "speed": 1.5 },
+      "rotation": 0,
+      "glow": true,
+      "fadeIn": 0.15,
+      "fadeOut": 0.4
+    }
+  ]
+}
+```
+
+The texture name is the file's path under `textures/particle/` without `.png`: `textures/particle/cosmetic/heart.png` is `mistsmp:cosmetic/heart`.
+
+All the fields in the table above work, plus these. Every one is optional except the texture. Where it says "range", you can write one number (`0.2`) or a range (`[0.1, 0.3]`), and each particle picks its own value from the range, so they don't all look identical.
+
+**Look**
+
+| Field | What it does |
+|---|---|
+| `texture` | One texture. |
+| `textures` | A list of frames, in order. |
+| `frames` | How frames are used: `random` (each particle picks one; the default), `life` (play once over the particle's life), or `loop` (cycle). |
+| `frameTicks` | For `loop`, ticks per frame. Default 2 (20 ticks is one second). |
+| `size` | Size in blocks, range. Default 0.1, at most 1. |
+| `sizeEnd` | Size at the end of its life, as a multiple of `size`. 1 is no change (the default), 0 shrinks away, 2 doubles. |
+| `color` | Hex color multiplied over the texture, or `"$tint"` for the supporter color. Two colors (`["#FF3355", "#FF99AA"]`) gives each particle a mix of the two. Default white (the texture as drawn). |
+| `colorEnd` | Color it fades to over its life. |
+| `alpha` | Opacity from 0 to 1, range. Default 1. |
+| `fadeIn` | Share of its life spent fading in, 0 to 1. Default 0. |
+| `fadeOut` | Share of its life spent fading out, 0 to 1. Default 0.3. |
+| `glow` | `true` to ignore lighting, so it's bright in the dark (flames, sparkles). Default `false`. |
+| `blend` | `translucent` (soft edges and see-through pixels; the default) or `cutout` (pixels are fully on or off). |
+| `rotation` | Starting angle in degrees, range. Leave it out for a random angle; `0` keeps it upright (hearts, flames). |
+| `spin` | Turning speed in degrees per tick, range. Negative turns the other way. Default 0. |
+
+**Motion**
+
+| Field | What it does |
+|---|---|
+| `lifetime` | How long it lasts in ticks, range. Default 20 to 30, at most 200. |
+| `velocity` | Starting drift in blocks per tick, `[x, y, z]` (from the table above). |
+| `velocityRandom` | Extra random drift, plus or minus, `[x, y, z]`. |
+| `gravity` | Pull per tick. Positive falls, negative floats up. Small numbers: 0.002 is gentle. Default 0. |
+| `drag` | Share of its speed kept each tick, 0 to 1. Default 0.96; 1 never slows down. |
+| `collide` | `true` to stop on blocks instead of passing through. Default `false`. |
+| `follow` | `true` to move along with the player. Default `false`: particles stay where they appeared, so they trail behind a moving player. |
+| `orbit` | Circles the player (or the follower): `{ "radius": 0.6, "speed": 4, "rise": 0 }`. `speed` is degrees per tick (negative goes the other way), `rise` is blocks per tick up or down. Add `"follow": true` so the circle moves with the player. |
+| `sway` | Side to side wobble, like a leaf or a flickering flame: `{ "amount": 0.1, "speed": 1 }`. `amount` in blocks, `speed` in wobbles per second. |
+| `pulse` | Size heartbeat: `{ "amount": 0.2, "speed": 1 }`. `amount` is how much bigger and smaller (0.2 is 20 percent), `speed` in beats per second. |
+| `maxAlive` | Most of this entry's particles that can exist at once for one player. Default 40, at most 100. |
+
+Custom particles need mod 0.9.2 or later. A texture name that doesn't match a file is skipped (the rest of the aura still shows) and logged in the game's `latest.log`.

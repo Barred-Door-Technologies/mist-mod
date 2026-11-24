@@ -4,7 +4,7 @@ This is the contract between `mist-plugin` (Paper, server) and `mist-mod` (Fabri
 Both sides implement it by hand: Paper hands plugins raw `byte[]`, Fabric uses typed codecs.
 Change this file and both implementations together.
 
-Current protocol version: **2**
+Current protocol version: **3**
 
 ## Principles
 
