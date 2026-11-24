@@ -77,6 +77,11 @@ public final class HeldCosmetics {
         return copy;
     }
 
+    /** @return true if the definition's held.appliesTo list matches this stack (used by CosmeticVisibility). */
+    public static boolean appliesTo(CosmeticDefinition definition, ItemStack stack) {
+        return !stack.isEmpty() && matcherFor(definition).matches(stack);
+    }
+
     private static Matcher matcherFor(CosmeticDefinition definition) {
         if (MATCHERS.size() > 256) MATCHERS.clear();
         return MATCHERS.computeIfAbsent(definition, HeldCosmetics::parse);

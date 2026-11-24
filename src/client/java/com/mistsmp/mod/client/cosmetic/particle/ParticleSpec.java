@@ -30,18 +30,19 @@ import net.minecraft.resources.Identifier;
  *   "size": 0.7,                dust only, 0.01 to 4
  *   "perSecond": 5,             spawn rate (fractions work: 0.5 = one every 2 seconds)
  *   "spread": 0.18,             blocks; how far from the anchor a particle can appear
- *   "area": "body",             AURA only: body (around the whole player), feet (ring at the feet), head (halo above)
+ *   "area": "body",             body, feet, head, face, back, wings, legs, hand; omitted = the slot's default (CosmeticParticles)
  *   "velocity": [0, 0.02, 0],   blocks per tick; vanilla adds its own drift to some particles
  *   "when": "always",           always, moving, sprinting, flying, idle
  *   "burst": 1,                 how many spawn together each time one is due (1 to 8)
- *   "offset": [0, 0, 0],        blocks; shifts the spawn point
+ *   "offset": [0, 0, 0],        blocks; shifts the spawn point, relative to the player's body: [right, up, forward]
  *   "shape": "random"           random, ring, sphere, column (see CosmeticParticles)
  * }
  *
  * An entry with "texture" or "textures" instead of "type" is a custom particle drawn from the resource
  * pack; its extra fields are in {@link CustomParticleSpec}.
  *
- * Followers spawn particles around the follower; auras around the player.
+ * Any slot's definition can have particles. They spawn only while that slot's cosmetic is showing
+ * (CosmeticVisibility); followers spawn around the follower, every other slot around the player.
  */
 public record ParticleSpec(
         ParticleType<?> type,
@@ -67,14 +68,16 @@ public record ParticleSpec(
     private static final int DEFAULT_COLOR = 0xFFFFFF;
 
     public enum Area {
-        BODY, FEET, HEAD;
+        BODY, FEET, HEAD, FACE, BACK, WINGS, LEGS, HAND;
 
+        /** @return null when missing or unknown; the spawner then uses the slot's default area. */
         static Area parse(String value) {
-            if (value == null) return BODY;
+            if (value == null) return null;
             try {
                 return valueOf(value.trim().toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException e) {
-                return BODY;
+                LOGGER.warn("Unknown particle area {}; using the slot's default", value);
+                return null;
             }
         }
     }

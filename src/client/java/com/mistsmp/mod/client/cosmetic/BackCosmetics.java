@@ -44,7 +44,7 @@ public final class BackCosmetics {
     public enum Style {
         WINGS, CAPE;
 
-        static Style of(CosmeticDefinition definition) {
+        public static Style of(CosmeticDefinition definition) {
             JsonObject raw = definition.raw();
             if (raw.has("back") && raw.get("back").isJsonObject()) {
                 JsonObject back = raw.getAsJsonObject("back");

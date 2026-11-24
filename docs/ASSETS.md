@@ -112,7 +112,7 @@ Without it, the cosmetic is a single still model. Every field is optional. These
 | `animateWhen` | When the flipbook plays: `always`, `moving`, `sprinting`, `flying` (elytra), or `idle`. Otherwise the first frame shows. |
 | `motion` | Continuous spin around the vertical axis, and an up-and-down bob. |
 | `placement` | Nudges the model after it is placed: offset in pixels, rotation in degrees, and size. Useful for fine-tuning without re-exporting. |
-
+| `particles` | Particles that come with the cosmetic, in any slot. Same format as [auras](#particles). They show only while the cosmetic does: a hat's while a helmet is worn, wings' while an elytra is worn, and so on. Needs mod 0.9.3 or later for slots other than aura and follower. |
 The sections below list each slot's extra fields. Unknown fields are ignored, and a file with a mistake is skipped (the cosmetic shows as a still model) instead of breaking anything.
 
 ### The website preview
@@ -397,7 +397,7 @@ cosmetics/aura/<key>.json
 
 ### Particles
 
-Each entry in `particles` is one effect. An aura can have several.
+Each entry in `particles` is one effect, and a cosmetic can have several. Any slot can have particles, not just auras.
 
 | Field | What it does |
 |---|---|
@@ -406,14 +406,12 @@ Each entry in `particles` is one effect. An aura can have several.
 | `size` | Dust only, 0.01 to 4. |
 | `perSecond` | How many spawn each second, up to 40. Fractions work: 0.5 is one every two seconds. |
 | `spread` | How far from the center a particle can appear, in blocks. |
-| `area` | Auras only: `body` (around the whole player), `feet` (a ring at the feet), or `head` (a halo above). |
+| `area` | Where on the player they appear. `body` (around the whole player), `feet` (a ring at the feet), and `head` (a halo above) are centered on the player. `face` (in front of the face), `back` (behind the shoulders), `wings` (across the wing span behind the back), `legs`, and `hand` (the hand holding a held cosmetic's item, otherwise the main hand) sit on the body and turn with it, and tilt with the player while gliding. Leave it out to use the slot's own spot: head for head, face for face, body for chest and aura, legs for legs, feet for feet, wings for wings (back for capes), and hand for held items. Followers always use the follower. |
 | `velocity` | Drift in blocks per tick, `[x, y, z]`. Some particles add their own drift on top. |
 | `when` | `always`, `moving`, `sprinting`, `flying`, or `idle`. |
 | `burst` | How many appear together each time one is due, 1 to 8. |
-| `offset` | Moves the spawn point, in blocks, `[x, y, z]`. |
-| `shape` | Where in the area they appear: `random` (the default for each area), `ring` (evenly around a flat circle), `sphere` (on the surface of a ball), or `column` (around the player at any height from feet to head). |
-
-Particles are drawn by each player's own game, so they cost the server nothing. Players' particle settings still apply, and anyone can hide other players' particles with a key (K by default). Keep `perSecond` modest; an aura is on screen for everyone nearby.
+| `offset` | Moves the spawn point, in blocks, relative to the player's body: `[right, up, forward]`. `[0, 0, -0.3]` is always behind the player, whichever way they face. |
+| `shape` | Where in the area they appear:
 
 If you aren't comfortable writing this file, describe the effect (particle, color, how dense, and when) and staff will write it.
 
