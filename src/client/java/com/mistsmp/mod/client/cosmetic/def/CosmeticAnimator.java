@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mistsmp.mod.client.cosmetic.follower.FollowerTracker;
+
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -53,6 +55,7 @@ public final class CosmeticAnimator {
             case SPRINTING -> entity.isSprinting();
             case FLYING -> entity.isFallFlying();
             case IDLE -> !isMoving(entity);
+            case WALKING -> FollowerTracker.isWalking(entity.getUUID());
         };
     }
 

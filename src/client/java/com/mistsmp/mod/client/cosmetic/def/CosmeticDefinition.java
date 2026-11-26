@@ -27,8 +27,9 @@ public record CosmeticDefinition(
 ) {
 
     public enum AnimateWhen {
-        ALWAYS, MOVING, SPRINTING, FLYING, IDLE;
-
+        ALWAYS, MOVING, SPRINTING, FLYING, IDLE,
+        /** The player's walking follower is moving (not the player). Followers only. */
+        WALKING;
         public static AnimateWhen parse(String value) {
             if (value == null) return ALWAYS;
             try {

@@ -11,7 +11,7 @@ How to make cosmetics that the Mist SMP client mod can render. Read **General ru
 | [Feet](#feet) | Boots are worn | 3D boots or a flat armor texture |
 | [Back](#back) | Wings: an elytra is worn. Capes: always | 3D wing model or a cape texture |
 | [Held item](#held-item) | A matching item is in hand | 3D or flat item model |
-| [Follower](#follower) | Always | 3D model that floats beside the player |
+| [Follower](#follower) | Always | 3D model that floats beside the player or walks after them |
 | [Aura](#aura) | Always | Particles only, no model |
 
 A cosmetic that replaces worn gear (head, chest, legs, feet, wings) hides that piece while it shows. The real item and its protection are unchanged; only the look is different.
@@ -105,14 +105,13 @@ Without it, the cosmetic is a single still model. Every field is optional. These
 }
 ```
 
-| Field | What it does |
-|---|---|
-| `frames` | A flipbook. Each entry is another model with its own `items` file. Leave it out for a single model. |
-| `frameTicks` | How long each frame shows. 20 ticks is one second. Default 4. |
-| `animateWhen` | When the flipbook plays: `always`, `moving`, `sprinting`, `flying` (elytra), or `idle`. Otherwise the first frame shows. |
-| `motion` | Continuous spin around the vertical axis, and an up-and-down bob. |
-| `placement` | Nudges the model after it is placed: offset in pixels, rotation in degrees, and size. Useful for fine-tuning without re-exporting. |
-| `particles` | Particles that come with the cosmetic, in any slot. Same format as [auras](#particles). They show only while the cosmetic does: a hat's while a helmet is worn, wings' while an elytra is worn, and so on. Needs mod 0.9.3 or later for slots other than aura and follower. |
+| Field | What it does                                                                                                                                                                                                                                                                |
+|---|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `frames` | A flipbook. Each entry is another model with its own `items` file. Leave it out for a single model.                                                                                                                                                                         |
+| `frameTicks` | How long each frame shows. 20 ticks is one second. Default 4.                                                                                                                                                                                                               |
+| `animateWhen` | When the flipbook plays: `always`, `moving`, `sprinting`, `flying` (elytra), `idle`, or `walking` (a walking follower is moving; followers only). Otherwise the first frame shows. || `motion` | Continuous spin around the vertical axis, and an up-and-down bob.                                                                                                                                                                                                           |
+| `placement` | Nudges the model after it is placed: offset in pixels, rotation in degrees, and size. Useful for fine-tuning without re-exporting.                                                                                                                                          |
+| `particles` | Particles that come with the cosmetic, in any slot. Same format as [auras](#particles). They show only while the cosmetic does: a hat's while a helmet is worn, wings' while an elytra is worn, and so on. Needs mod 0.9.4 or later for slots other than aura and follower. |
 The sections below list each slot's extra fields. Unknown fields are ignored, and a file with a mistake is skipped (the cosmetic shows as a still model) instead of breaking anything.
 
 ### The website preview
@@ -333,12 +332,13 @@ Entries are item ids, or item tags starting with `#` (`#minecraft:swords` is eve
 
 ## Follower
 
-A small model that floats behind the player, catches up smoothly as they move, and can circle them when they stand still. One per player.
-
+A small model that goes everywhere with the player. One per player. It either **flies** (floats behind the player's shoulder, catches up smoothly, and can circle them when they stand still) or **walks** (follows on the ground like a tamed wolf or cat).
 **Files:** the three [model files](#model-files) in the `follower` folder, plus an optional definition file.
 
-**Placement:** built on [`follower_reference.json`](reference/follower_reference.json). Center the model on `(8, 8, 8)`, facing south (+Z). A good size is 8 to 16 pixels across (a player head is 8). The Display tab is ignored.
+**Placement:** built on [`follower_reference.json`](reference/follower_reference.json), facing south (+Z). A good size is 8 to 16 pixels across (a player head is 8). The Display tab is ignored.
 
+- Flying: center the model on `(8, 8, 8)`.
+- Walking: center it on x and z = 8, with its feet on the bottom of the grid (y = 0).
 Optional settings, in `cosmetics/follower/<key>.json` (distances in blocks):
 
 ```json
@@ -367,6 +367,37 @@ Optional settings, in `cosmetics/follower/<key>.json` (distances in blocks):
 
 The general `motion` field (spin and bob) works here too, and suits floating followers well.
 
+### Walking followers
+
+Add `"movement": "walking"` and it follows on the ground instead. It waits while the player is close, walks after them once they're further than `startDistance`, and stops when it's within `stopDistance`. It walks faster the further behind it is, steps up one block, drops down ledges, and stands on water. It doesn't find its way around walls: if one blocks it while the player is out of range, or the player gets further than `teleportDistance`, it appears behind them (while they glide or fly, it waits until they land).
+
+```json
+{
+  "scale": 1.0,
+  "follower": {
+    "movement": "walking",
+    "startDistance": 4,
+    "stopDistance": 2,
+    "speed": 0.2,
+    "teleportDistance": 12,
+    "wanderWhenIdle": { "afterTicks": 100, "radius": 2.5 }
+  },
+  "frames": ["mistsmp:cosmetic/follower/<key>", "mistsmp:cosmetic/follower/<key>_walk1"],
+  "frameTicks": 2,
+  "animateWhen": "walking"
+}
+```
+
+| Field | What it does |
+|---|---|
+| `movement` | `flying` (the default) or `walking`. |
+| `startDistance` | How far away the player gets before it starts walking after them. |
+| `stopDistance` | How close it gets before it stops. |
+| `speed` | Walking speed in blocks per tick (0.2 is a normal walk). It goes up to three times this to catch up. |
+| `teleportDistance` | Further than this and it appears behind the player. `distance` and `side` set where. |
+| `wanderWhenIdle` | After the player stands still this many ticks, it strolls to random spots within `radius` blocks of them. Leave it out to have it sit still. |
+
+For a walk cycle, use `"animateWhen": "walking"`: the frames play only while the follower itself is moving, and the first frame (standing) shows when it stops. `orbitWhenIdle`, `height`, and `smoothing` are for flying followers and are ignored when walking. Needs mod 0.9.4 or later; older versions show it flying.
 ---
 
 ## Aura
