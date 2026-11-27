@@ -40,6 +40,15 @@ public interface CosmeticRenderState {
 
     void mistsmp$setBootTransform(CosmeticTransform transform);
 
+    /** HANDS gloves, drawn on the arm bones by BodyCosmeticLayer. Empty when there are none. */
+    ItemStackRenderState mistsmp$getRightGlove();
+
+    ItemStackRenderState mistsmp$getLeftGlove();
+
+    CosmeticTransform mistsmp$getGloveTransform();
+
+    void mistsmp$setGloveTransform(CosmeticTransform transform);
+
     /** FACE model, drawn on the head bone by BodyCosmeticLayer. Empty when there is none. */
     ItemStackRenderState mistsmp$getFaceItem();
 

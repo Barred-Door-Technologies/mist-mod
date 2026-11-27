@@ -39,7 +39,7 @@ public final class CosmeticVisibility {
             // HeldCosmetics: a held item matches held.appliesTo
             case HELD -> heldSide(player, definition) != 0;
             // No vanilla item: always
-            case FACE, FOLLOWER, AURA -> true;
+            case FACE, FOLLOWER, AURA, HANDS -> true;
         };
     }
 

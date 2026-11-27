@@ -12,13 +12,15 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.player.PlayerModelType;
 
 /**
  * Draws cosmetic models attached to the player's bones, so they follow crouching, turning, and walking.
- * BodyCosmetics and FeetCosmetics decide what (if anything) to draw while extracting the render state.
+ * BodyCosmetics, FeetCosmetics, and HandsCosmetics decide what (if anything) to draw while extracting the render state.
  *
  * Body (CHEST models): back_reference pixel (8, 12, 10), the top center of the body, lands on the body pivot.
  * Legs (FEET models): feet_reference pixel (8, 12, 8), the top center of the leg, lands on the leg pivot.
+ * Arms (HANDS models): the arm pivot pixel lands on the arm pivot; see HandsCosmetics.toArmAnchor.
  * Model +Y is up and model +Z (south) is the way the player faces.
  */
 public final class BodyCosmeticLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
@@ -44,6 +46,13 @@ public final class BodyCosmeticLayer extends RenderLayer<AvatarRenderState, Play
         submitOnPart(poseStack, submitNodeCollector, lightCoords, state, model, model.leftLeg,
                 cosmeticState.mistsmp$getLeftBoot(), bootTransform, 0.0F);
 
+        CosmeticTransform gloveTransform = cosmeticState.mistsmp$getGloveTransform();
+        boolean slim = state.skin.model() == PlayerModelType.SLIM;
+        submitOnArm(poseStack, submitNodeCollector, lightCoords, state, model, model.rightArm,
+                cosmeticState.mistsmp$getRightGlove(), gloveTransform, true, slim);
+        submitOnArm(poseStack, submitNodeCollector, lightCoords, state, model, model.leftArm,
+                cosmeticState.mistsmp$getLeftGlove(), gloveTransform, false, slim);
+
         // FACE: same placement as a head item, so the Blockbench Display tab Head slot applies.
         ItemStackRenderState face = cosmeticState.mistsmp$getFaceItem();
         if (!face.isEmpty()) {
@@ -60,8 +69,25 @@ public final class BodyCosmeticLayer extends RenderLayer<AvatarRenderState, Play
         }
     }
 
+    private void submitOnArm(PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, AvatarRenderState state,
+                             PlayerModel model, ModelPart arm, ItemStackRenderState item, CosmeticTransform transform,
+                             boolean rightArm, boolean slim) {
+        if (item.isEmpty()) {
+            return;
+        }
+        poseStack.pushPose();
+        model.root().translateAndRotate(poseStack);
+        arm.translateAndRotate(poseStack);
+        HandsCosmetics.toArmAnchor(poseStack, rightArm, slim);
+        if (transform != null) {
+            transform.applyTo(poseStack);
+        }
+        item.submit(poseStack, collector, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        poseStack.popPose();
+    }
+
     /**
-     * @param zShift moves the anchor along Blockbench Z: -0.125 puts pixel z=10 (body center) on the pivot,
+     * @param zShift moves the anchor
      *               0 puts pixel z=8 (leg center) on it.
      */
     private void submitOnPart(PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, AvatarRenderState state,

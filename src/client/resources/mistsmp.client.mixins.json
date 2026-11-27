@@ -6,6 +6,7 @@
     "AvatarRendererMixin",
     "ChatScreenInsertionMixin",
     "CustomHeadLayerMixin",
+    "FirstPersonHandMixin",
     "FontAccessor",
     "FontGlyphMixin",
     "HumanoidMobRendererMixin",

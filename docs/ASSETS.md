@@ -7,6 +7,7 @@ How to make cosmetics that the Mist SMP client mod can render. Read **General ru
 | [Head](#head) | Something is worn on the head | 3D model |
 | [Face](#face) | Always | 3D model (masks, glasses) |
 | [Chest](#chest) | A chestplate is worn | 3D model (backpacks) or a flat armor texture (shirts) |
+| [Hands](#hands) | Always | 3D gloves on both arms |
 | [Legs](#legs) | Leggings are worn | Flat armor texture |
 | [Feet](#feet) | Boots are worn | 3D boots or a flat armor texture |
 | [Back](#back) | Wings: an elytra is worn. Capes: always | 3D wing model or a cape texture |
@@ -28,7 +29,7 @@ Every cosmetic has a **key**: a short name used for its file names and its datab
 - Unique across **all** slots. A head item and a back item can't both be called `storm`.
 - It can't change once the cosmetic is in the game.
 
-In the paths below, `<key>` means your cosmetic key and `<slot>` means the slot's folder name: `head`, `face`, `chest`, `legs`, `feet`, `back`, `held`, `follower`, or `aura`.
+In the paths below, `<key>` means your cosmetic key and `<slot>` means the slot's folder name: `head`, `face`, `chest`, `hands`, `legs`, `feet`, `back`, `held`, `follower`, or `aura`.
 
 ### Files
 
@@ -202,6 +203,28 @@ textures/entity/equipment/humanoid/cosmetic/chest/<key>.png
 The PNG is **64x32**, in the vanilla armor layout. Start from a copy of a vanilla armor texture (iron is a good one) so the regions line up, and paint only the body and arm regions. The rest can be transparent.
 
 If a chest cosmetic has both a model and a texture, the model wins.
+
+---
+
+## Hands
+
+Gloves on both arms. They always show (there's no vanilla glove item), follow arm swings and attacks, and also show on your own arms in first person.
+
+**Files:** two models, the right hand and the left hand:
+```
+items/cosmetic/hands/<key>.json
+items/cosmetic/hands/<key>_left.json
+models/cosmetic/hands/<key>.json
+models/cosmetic/hands/<key>_left.json
+textures/item/cosmetic/hands/<key>.png
+```
+
+**Placement:** built on [`feet_reference.json`](reference/feet_reference.json): the arm is the same size as a leg. Build the **right** hand: the arm is `[6,0,6]-[10,12,10]` with the hand at the bottom (y = 0) and the shoulder at the top, the front of the hand toward +Z, and -X is the outside. Then mirror it on X in Blockbench and export it as `<key>_left`. The Display tab is ignored.
+
+- Slim (Alex) arms are 3 pixels wide instead of 4. Gloves are moved half a pixel in on slim arms so they stay centered; build for the 4-pixel arm.
+- Flipbook frames each need their own `_left` file, like boots.
+- Particles in the definition file default to the hand area.
+- Needs mod 0.9.4 or later.
 
 ---
 

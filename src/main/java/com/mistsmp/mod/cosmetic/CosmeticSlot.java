@@ -5,8 +5,7 @@ package com.mistsmp.mod.cosmetic;
  * never changes what an existing id means. Never reuse a retired id.
  *
  * Every slot renders only while something is in it (the vanilla item is hidden and the
- * cosmetic is drawn instead). FACE, FOLLOWER and AURA have no vanilla item and show whenever equipped.
- */
+ * cosmetic is drawn instead). FACE, FOLLOWER, AURA and HANDS have no vanilla item and show whenever equipped. */
 public enum CosmeticSlot {
     HEAD(0),
     CHEST(1),
@@ -16,7 +15,8 @@ public enum CosmeticSlot {
     HELD(5),
     FACE(6),
     FOLLOWER(7),
-    AURA(8);
+    AURA(8),
+    HANDS(9);
 
     private final int wireId;
 

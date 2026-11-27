@@ -45,10 +45,39 @@ abstract class HumanoidRenderStateMixin implements CosmeticRenderState {
     private CosmeticTransform mistsmp$bootTransform;
 
     @Unique
+    private final ItemStackRenderState mistsmp$rightGlove = new ItemStackRenderState();
+
+    @Unique
+    private final ItemStackRenderState mistsmp$leftGlove = new ItemStackRenderState();
+
+    @Unique
+    private CosmeticTransform mistsmp$gloveTransform;
+
+    @Unique
     private final ItemStackRenderState mistsmp$faceItem = new ItemStackRenderState();
 
     @Unique
     private CosmeticTransform mistsmp$faceTransform;
+
+    @Override
+    public ItemStackRenderState mistsmp$getRightGlove() {
+        return mistsmp$rightGlove;
+    }
+
+    @Override
+    public ItemStackRenderState mistsmp$getLeftGlove() {
+        return mistsmp$leftGlove;
+    }
+
+    @Override
+    public CosmeticTransform mistsmp$getGloveTransform() {
+        return mistsmp$gloveTransform;
+    }
+
+    @Override
+    public void mistsmp$setGloveTransform(CosmeticTransform transform) {
+        this.mistsmp$gloveTransform = transform;
+    }
 
     @Override
     public ItemStackRenderState mistsmp$getFaceItem() {

@@ -9,6 +9,7 @@ import com.mistsmp.mod.client.cosmetic.ArmorCosmetics;
 import com.mistsmp.mod.client.cosmetic.BackCosmetics;
 import com.mistsmp.mod.client.cosmetic.FaceCosmetics;
 import com.mistsmp.mod.client.cosmetic.FeetCosmetics;
+import com.mistsmp.mod.client.cosmetic.HandsCosmetics;
 import com.mistsmp.mod.client.cosmetic.BodyCosmetics;
 import com.mistsmp.mod.client.cosmetic.HeadCosmetics;
 
@@ -33,6 +34,7 @@ abstract class HumanoidMobRendererMixin {
         BackCosmetics.apply(entity, state, partialTicks, itemModelResolver);
         FeetCosmetics.apply(entity, state, partialTicks, itemModelResolver);
         FaceCosmetics.apply(entity, state, partialTicks, itemModelResolver);
+        HandsCosmetics.apply(entity, state, partialTicks, itemModelResolver);
         ArmorCosmetics.apply(entity, state);
     }
 }
