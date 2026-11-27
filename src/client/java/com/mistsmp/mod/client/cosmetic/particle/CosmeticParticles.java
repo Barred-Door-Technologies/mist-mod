@@ -134,7 +134,7 @@ public final class CosmeticParticles {
             case FACE -> ParticleSpec.Area.FACE;
             case LEGS -> ParticleSpec.Area.LEGS;
             case FEET -> ParticleSpec.Area.FEET;
-            case HELD -> ParticleSpec.Area.HAND;
+            case HELD, HANDS -> ParticleSpec.Area.HAND;
             case BACK -> BackCosmetics.Style.of(definition) == BackCosmetics.Style.CAPE
                     ? ParticleSpec.Area.BACK
                     : ParticleSpec.Area.WINGS;
